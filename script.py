@@ -15,7 +15,7 @@ from sklearn.preprocessing import LabelEncoder
 plt.style.use('ggplot')
 
 # Load the dataset
-dengue_df = pd.read_csv('dengue.csv')
+dengue_df = pd.read_csv('Project Machine Learning\dengue.csv')
 
 # Check for any missing values
 print(dengue_df.isnull().sum())
@@ -80,7 +80,7 @@ plt.savefig("dengue_pairplot.png", dpi=300, bbox_inches='tight')
 plt.show()
 
 # Plot histograms for each numerical feature
-numeric_df.hist(bins=20, figsize=(12, 10), color='skyblue', edgecolor='black')
+dengue_numeric_only.hist(bins=20, figsize=(12, 10), color='skyblue', edgecolor='black')
 plt.suptitle("Distribution of Numerical Features in Dengue Dataset", y=1.02)
 plt.tight_layout()
 plt.show()
