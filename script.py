@@ -6,14 +6,16 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.preprocessing import LabelEncoder
 
 plt.style.use('ggplot')
 
 # Load the dataset
-dengue_df = pd.read_csv('Project Machine Learning\dengue.csv')
+dengue_df = pd.read_csv('dengue.csv')
 
 # Check for any missing values
 print(dengue_df.isnull().sum())
@@ -28,9 +30,6 @@ print(dengue_df.shape)
 print("\nStatistical Summary:")
 print(dengue_df.describe(include='number'))
 
-print(' Statistical Summary of non numbered data : ')
-print(dengue_df.describe(exclude='number'))
-
 # First few rows
 print("\nFirst 5 Rows of Data:")
 print(dengue_df.head())
@@ -44,7 +43,7 @@ print("\nClass Distribution:")
 print(dengue_df['Outcome'].value_counts())
 
 # Ensure 'Outcome' is treated as a categorical variable
-dengue_df['Outcome'] = dengue_df['Outcome'].astype('category')
+dengue_df['Outcome'] = dengue_df['Outcome'].astype('int')
 
 # Filter numeric columns and include 'Outcome' for hue
 dengue_numeric_only = dengue_df.select_dtypes(include=['number']).copy()
@@ -82,7 +81,7 @@ plt.savefig("dengue_boxplots.png", dpi=300, bbox_inches='tight')
 plt.show()
 
 # Separate features and target variable
-X = dengue_df.drop(['Outcome', 'Gender','District','Area'], axis=1)  
+X = dengue_df.drop(['Outcome','Gender','District','Area'], axis=1)
 y = dengue_df['Outcome']               
 
 # Split the dataset into training and testing sets
@@ -93,16 +92,25 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Initialize and train the classifier
-model = RandomForestClassifier(random_state=42)
-model.fit(X_train, y_train)
+# Initialize the neural network model
+model = Sequential()
+model.add(Dense(64, input_dim=X_train.shape[1], activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))  # Output layer for binary classification
 
-# Predict on the test set
-y_pred = model.predict(X_test)
+# Compile the model
+model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+
+# Train the model
+print("Training started..., this can take a while:")
+model.fit(X_train, y_train, epochs=30, batch_size=32, validation_split=0.2, verbose=1)
+
+# Evaluate the model
+y_pred = (model.predict(X_test) > 0.5).astype("int32")  # Convert probabilities to binary outcomes
 
 # Generate and display the confusion matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
-ConfusionMatrixDisplay(conf_matrix, display_labels=model.classes_).plot(cmap="plasma")
+ConfusionMatrixDisplay(conf_matrix, display_labels=[0, 1]).plot(cmap="plasma")
 plt.title("Confusion Matrix")
 plt.show()
 
