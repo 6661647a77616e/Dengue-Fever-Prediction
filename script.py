@@ -79,6 +79,12 @@ plt.suptitle("Dengue Pair Plot", y=1.02)
 plt.savefig("dengue_pairplot.png", dpi=300, bbox_inches='tight')
 plt.show()
 
+# Plot histograms for each numerical feature
+numeric_df.hist(bins=20, figsize=(12, 10), color='skyblue', edgecolor='black')
+plt.suptitle("Distribution of Numerical Features in Dengue Dataset", y=1.02)
+plt.tight_layout()
+plt.show()
+
 # Create box plots for each feature against the target 'Outcome'
 plt.figure(figsize=(15, 10))
 for i, column in enumerate(dengue_df.select_dtypes(include=['number']).columns, 1):
