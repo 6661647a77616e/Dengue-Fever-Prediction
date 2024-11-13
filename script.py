@@ -13,7 +13,7 @@ from sklearn.preprocessing import LabelEncoder
 plt.style.use('ggplot')
 
 # Load the dataset
-dengue_df = pd.read_csv('dengue.csv')
+dengue_df = pd.read_csv('Project Machine Learning\dengue.csv')
 
 # Check for any missing values
 print(dengue_df.isnull().sum())
@@ -27,6 +27,9 @@ print(dengue_df.shape)
 # Basic summary statistics 
 print("\nStatistical Summary:")
 print(dengue_df.describe(include='number'))
+
+print(' Statistical Summary of non numbered data : ')
+print(dengue_df.describe(exclude='number'))
 
 # First few rows
 print("\nFirst 5 Rows of Data:")
