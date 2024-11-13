@@ -42,6 +42,18 @@ print(dengue_df.columns)
 print("\nClass Distribution:")
 print(dengue_df['Outcome'].value_counts())
 
+# Calculate the correlation matrix
+correlation_matrix = dengue_numeric_only.corr()
+
+# Set up the matplotlib figure
+plt.figure(figsize=(12, 8))
+
+# Draw the heatmap with a color palette and annotations
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+plt.title("Correlation Matrix of Dengue Dataset Features")
+plt.savefig("dengue_correlation_matrix.png", dpi=300, bbox_inches='tight')
+plt.show()
+
 # Ensure 'Outcome' is treated as a categorical variable
 dengue_df['Outcome'] = dengue_df['Outcome'].astype('int')
 
