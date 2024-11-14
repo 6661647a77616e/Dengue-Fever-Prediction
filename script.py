@@ -5,7 +5,7 @@ import seaborn as sns
 import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler,PolynomialFeatures,OneHotEncoder
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -29,6 +29,10 @@ print(dengue_df.shape)
 # Basic summary statistics 
 print("\nStatistical Summary:")
 print(dengue_df.describe(include='number'))
+
+# Basic summary statistics 
+print("\nStatistical Summary of non numbers:")
+print(dengue_df.describe(exclude='number'))
 
 # First few rows
 print("\nFirst 5 Rows of Data:")
@@ -68,6 +72,39 @@ dengue_numeric_only = dengue_numeric_only.dropna()
 label_encoder = LabelEncoder()
 dengue_df['AreaType'] = label_encoder.fit_transform(dengue_df['AreaType'])
 dengue_df['HouseType'] = label_encoder.fit_transform(dengue_df['HouseType'])
+
+# Assuming 'df' is your original dataframe with the necessary columns
+encoder = OneHotEncoder(drop='first', sparse_output=False)
+poly = PolynomialFeatures(degree=2, include_bias=False)
+
+# Step 1: Encode categorical variables (e.g., AreaType and HouseType)
+encoded_columns = encoder.fit_transform(dengue_df[['AreaType', 'HouseType']])
+encoded_df = pd.DataFrame(encoded_columns, columns=encoder.get_feature_names_out(['AreaType', 'HouseType']))
+
+# Step 2: Generate interaction terms for numeric variables (e.g., Age, NS1, IgG, IgM)
+numeric_df = dengue_df[['Age', 'NS1', 'IgG', 'IgM']]  # Adjust based on your dataset
+interaction_terms = poly.fit_transform(numeric_df)
+
+# Convert interaction terms to a DataFrame with proper column names
+interaction_df = pd.DataFrame(interaction_terms, columns=poly.get_feature_names_out(numeric_df.columns))
+
+# Step 3: Combine everything into the final DataFrame
+# Drop the original categorical columns to avoid duplication
+final_df = pd.concat([dengue_df.drop(['AreaType', 'HouseType'], axis=1), encoded_df, interaction_df], axis=1)
+
+# Step 4: Remove redundant columns (e.g., 'Age', 'NS1', etc., if they are now duplicated)
+final_df = final_df.loc[:, ~final_df.columns.duplicated()]
+
+# Adjust pandas display options for better readability
+pd.set_option('display.max_columns', None)  # Show all columns
+pd.set_option('display.width', None)  # Don't truncate rows
+
+print("\nData with Interaction Terms column:")
+print(final_df.columns)
+
+# Print the final DataFrame to see the cleaned-up output
+print("\nData with Interaction Terms:")
+print(final_df.head())
 
 # Plot pair plot with specified hue
 sns.set_style("whitegrid")
