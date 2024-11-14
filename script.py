@@ -172,3 +172,10 @@ plt.show()
 # Print the classification report for additional metrics
 print("Classification Report:")
 print(classification_report(y_test, y_pred))
+
+import pickle
+
+# After training your model
+# Save the model to a file
+with open('dengue.pkl', 'wb') as file:
+    pickle.dump(model, file)
