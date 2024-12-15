@@ -15,7 +15,7 @@ from sklearn.preprocessing import LabelEncoder
 plt.style.use('ggplot')
 
 # Load the dataset
-dengue_df = pd.read_csv('Project Machine Learning\dengue.csv')
+dengue_df = pd.read_csv('dengue.csv')
 
 # Check for any missing values
 print(dengue_df.isnull().sum())

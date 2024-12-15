@@ -13,7 +13,7 @@ import pickle
 plt.style.use('ggplot')
 
 # Load the dataset
-dengue_df = pd.read_csv('Project Machine Learning/dengue.csv')
+dengue_df = pd.read_csv('dengue.csv')
 
 # Perform EDA
 

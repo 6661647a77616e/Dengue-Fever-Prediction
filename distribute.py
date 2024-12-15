@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load the dataset
-dengue_df = pd.read_csv('Project Machine Learning/dataset.csv')
+dengue_df = pd.read_csv('dengue.csv')
 
 # Select only the numerical columns
 numeric_df = dengue_df.select_dtypes(include=[np.number])
